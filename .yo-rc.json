@@ -1,0 +1,11 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": true,
+    "environment": "spo",
+    "version": "1.7.1",
+    "libraryName": "sp-fx-kanban",
+    "libraryId": "6e718e74-1a2a-4e21-bdd1-ac4231ed849d",
+    "packageManager": "npm",
+    "componentType": "webpart"
+  }
+}
