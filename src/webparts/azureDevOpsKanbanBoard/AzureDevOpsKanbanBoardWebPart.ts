@@ -26,6 +26,7 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
       AzureDevOpsKanbanBoard,
       {
         description: this.properties.description,
+        workItems: this.workItemList
       }
     );
 
@@ -65,10 +66,8 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
                     TargetDate: items.value[i].fields["Microsoft.VSTS.Scheduling.TargetDate"],
                   });
                 }
-                // console.log(workItems);
                 this.workItemList = workItems;
-                console.log(this.workItemList);
-                // return workItems;
+                // console.log(this.workItemList);
               });
           });
       });

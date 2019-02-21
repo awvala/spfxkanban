@@ -1,5 +1,6 @@
 export interface IAzureDevOpsKanbanBoardWebPartProps {
     description: string; // Stores the Web Part Title
+    workItems: Array<WItem>;
    }
 
    export interface WID {
