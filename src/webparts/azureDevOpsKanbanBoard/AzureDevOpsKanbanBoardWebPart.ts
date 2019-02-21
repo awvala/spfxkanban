@@ -11,7 +11,7 @@ import { AadHttpClient, HttpClientResponse } from '@microsoft/sp-http';
 import * as strings from 'AzureDevOpsKanbanBoardWebPartStrings';
 import AzureDevOpsKanbanBoard from './components/AzureDevOpsKanbanBoard';
 import { IAzureDevOpsKanbanBoardProps } from './components/IAzureDevOpsKanbanBoardProps';
-import { IAzureDevOpsKanbanBoardWebPartProps, WItem, WItems, WIOptions } from './IAzureDevOpsKanbanBoardWebPartProps';
+import { IAzureDevOpsKanbanBoardWebPartProps, WID, WItem, WItems } from './IAzureDevOpsKanbanBoardWebPartProps';
 
 export interface IAzureDevOpsKanbanBoardWebPartProps {
   description: string;
@@ -19,11 +19,13 @@ export interface IAzureDevOpsKanbanBoardWebPartProps {
 
 export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart<IAzureDevOpsKanbanBoardWebPartProps> {
 
+  private workItemList: WItem[];
+
   public render(): void {
     const element: React.ReactElement<IAzureDevOpsKanbanBoardProps> = React.createElement(
       AzureDevOpsKanbanBoard,
       {
-        description: this.properties.description
+        description: this.properties.description,
       }
     );
 
@@ -37,17 +39,10 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
           })
           .then((response) => {
             let wIDS = new Array;
-            let lists: WItem[] = response.workItems;
-            lists.forEach((list: WItem) => {
+            let lists: WID[] = response.workItems;
+            lists.forEach((list: WID) => {
               wIDS.push(list.id);
             });
-            // console.log(wIDS);
-            // let options: Array<WIOptions> = new Array<WIOptions>();
-            // let lists: WItem[] = response.workItems;
-            //lists.forEach((list: WItem) => {
-            //   options.push({ Id: list.id });
-            //});
-            //console.log(`https://dev.azure.com/AndrewVala/_apis/wit/workitems?ids=${wIDS}&$expand=fields&api-version=5.0`);
             return wIDS;
           })
           .then((wIDs) => {
@@ -56,8 +51,24 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
               .then((response: HttpClientResponse) => {
                 return response.json();
               })
-              .then((response) => {
-                console.log(response);
+              .then((items: any) => {
+                // console.log(items);
+                const workItems: WItem[] = [];
+                for (let i: number = 0; i < items.value.length; i++) {
+                  workItems.push({
+                    Id: items.value[i].id,
+                    Title: items.value[i].fields["System.Title"],
+                    Description: items.value[i].fields["System.Description"],
+                    WorkItemType: items.value[i].fields["System.WorkItemType"],
+                    State: items.value[i].fields["System.State"],
+                    StartDate: items.value[i].fields["Microsoft.VSTS.Scheduling.StartDate"],
+                    TargetDate: items.value[i].fields["Microsoft.VSTS.Scheduling.TargetDate"],
+                  });
+                }
+                // console.log(workItems);
+                this.workItemList = workItems;
+                console.log(this.workItemList);
+                // return workItems;
               });
           });
       });
