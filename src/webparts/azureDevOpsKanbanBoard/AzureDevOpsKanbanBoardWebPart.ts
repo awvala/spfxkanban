@@ -67,7 +67,7 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
                   });
                 }
                 this.workItemList = workItems;
-                // console.log(this.workItemList);
+                 console.log(this.workItemList);
               });
           });
       });
