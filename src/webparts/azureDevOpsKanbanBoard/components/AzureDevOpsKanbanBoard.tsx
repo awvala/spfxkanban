@@ -10,7 +10,7 @@ const data = {
     {
       id: 'lane1',
       title: 'Planned Tasks',
-      label: '2/2',
+      // label: '2/2',
       cards: [
         {id: 'Card1', title: 'Write Blog', description: 'Can AI make memes', label: '30 mins'},
         {id: 'Card2', title: 'Pay Rent', description: 'Transfer via NEFT', label: '5 mins', metadata: {sha: 'be312a1'}}
@@ -18,8 +18,17 @@ const data = {
     },
     {
       id: 'lane2',
+      title: 'In Progress',
+      // label: '0/0',
+      cards: [
+        {id: 'Card1', title: 'Review movies', description: 'Can AI review cinematography?', label: '20 mins'},
+        {id: 'Card2', title: 'Go out to dinner', description: 'Can I turn my OS into Friday?', label: '5 mins'}
+      ]
+    },
+    {
+      id: 'lane3',
       title: 'Completed',
-      label: '0/0',
+      // label: '0/0',
       cards: []
     }
   ]
@@ -44,7 +53,7 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
       //   </div>
       // </div>
       <div className={ styles.azureDevOpsKanbanBoard }>
-      <h2 className={ styles.description }>{escape(this.props.description)}</h2>
+      <h2>{escape(this.props.description)}</h2>
         <Board 
           data={data} 
           draggable
