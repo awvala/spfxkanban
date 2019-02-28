@@ -4,6 +4,10 @@ export interface IAzureDevOpsKanbanBoardWebPartProps {
    }
 
    export interface WID {
+     target: Target;
+  }
+
+  export interface Target {
     id?: string | number;
   }
 

@@ -39,10 +39,12 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
             return response.json();
           })
           .then((response) => {
+            console.log(response);
             let wIDS = new Array;
-            let lists: WID[] = response.workItems;
+            let lists: WID[] = response.workItemRelations;
+            console.log(lists);
             lists.forEach((list: WID) => {
-              wIDS.push(list.id);
+              wIDS.push(list.target.id);
             });
             return wIDS;
           })
@@ -53,7 +55,7 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
                 return response.json();
               })
               .then((items: any) => {
-                // console.log(items);
+                console.log(items);
                 const workItems: WItem[] = [];
                 for (let i: number = 0; i < items.value.length; i++) {
                   workItems.push({
@@ -67,7 +69,7 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
                   });
                 }
                 this.workItemList = workItems;
-                 console.log(this.workItemList);
+                 // console.log(this.workItemList);
               });
           });
       });
