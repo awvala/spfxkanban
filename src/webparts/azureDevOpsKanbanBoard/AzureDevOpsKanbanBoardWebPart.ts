@@ -48,7 +48,7 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
           })
           .then((wIDs) => {
             client
-              .get(`https://dev.azure.com/AndrewVala/_apis/wit/workitems?ids=${wIDs}&$expand=fields&api-version=5.0`, AadHttpClient.configurations.v1)
+              .get(`https://dev.azure.com/AndrewVala/_apis/wit/workitems?ids=${wIDs}&$expand=relations&api-version=5.0`, AadHttpClient.configurations.v1)
               .then((response: HttpClientResponse) => {
                 return response.json();
               })
@@ -64,6 +64,7 @@ export default class AzureDevOpsKanbanBoardWebPart extends BaseClientSideWebPart
                     State: items.value[i].fields["System.State"],
                     StartDate: items.value[i].fields["Microsoft.VSTS.Scheduling.StartDate"],
                     TargetDate: items.value[i].fields["Microsoft.VSTS.Scheduling.TargetDate"],
+                    Relations: items.value[i].relations,
                   });
                 }
                 this.workItemList = workItems;

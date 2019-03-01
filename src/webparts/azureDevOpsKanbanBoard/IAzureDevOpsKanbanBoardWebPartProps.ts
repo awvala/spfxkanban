@@ -15,6 +15,7 @@ export interface IAzureDevOpsKanbanBoardWebPartProps {
     State?: string;
     StartDate?: Date;
     TargetDate?: Date;
+    Relations?: any;
   }
 
   export interface WItems {
