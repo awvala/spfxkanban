@@ -31,8 +31,8 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
       data: {
         lanes: [
           {
-            id: '',
-            title: '',
+            id: 'Loading...',
+            title: 'Loading...',
             // label: '2/2',
             cards: []
           }
@@ -77,7 +77,7 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
         data: {
           lanes: [
             {
-              id: 'lane1',
+              id: 'Planned Tasks',
               title: 'Planned Tasks',
               // label: '2/2',
               cards: [
@@ -86,7 +86,7 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
               ]
             },
             {
-              id: 'lane2',
+              id: 'In Progress',
               title: 'In Progress',
               // label: '0/0',
               cards: [
@@ -97,9 +97,9 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
           ]
         }
       });
-      console.log(this.state.data);
+      // console.log(this.state.data);
     } else {
-      console.log("Get ADO data");
+      // console.log("Get ADO data");
       this.props.context.aadHttpClientFactory
         .getClient('499b84ac-1321-427f-aa17-267ca6975798')
         .then((client: AadHttpClient): void => {
@@ -123,10 +123,14 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
                   return response.json();
                 })
                 .then(json => {
-                  console.log(json);
+                  // console.log(json);
+                  //let uniqueStates = [new Set(json.value.map(item => item.fields["System.State"]))];
+                  // console.log(uniqueStates);
+
+                  this.buildLanes(json);
                   let workItems: Array<WItem> = new Array<WItem>();
                   //for (let i: number = 0; i < items.value.length; i++) {
-                    json.value.map((items: any) => {
+                  json.value.map((items: any) => {
                     workItems.push({
                       Id: items.id,
                       Title: items.fields["System.Title"],
@@ -138,52 +142,33 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
                       Relations: items.relations
                     });
                   });
-
-                  this.setState ({
+                  this.setState({
                     workItems: workItems,
                   });
-                   console.log(this.state.workItems);
+                  console.log(this.state.workItems);
+                  //this.buildLanes();
                 });
             });
         });
     }
   }
+
+  @autobind
+  private buildLanes(json): void {
+    //let uniqueStates = Array.from(new Set(this.state.workItems.map(item => item.State)));
+    // console.log(uniqueStates);
+     let uniqueStates = Array.from(new Set(json.value.map(item => item.fields["System.State"])));
+     console.log(uniqueStates);
+    let lanes = [];
+    uniqueStates.map((items: any) => {
+      lanes.push({
+        id: items,
+        title: items,
+        cards: [],
+      });
+
+    });
+    console.log(lanes);
+  }
+
 }
-
-    //else if (!this.props.missingField && this.props.filterName !== undefined) {
-    //   // convert data from Azure DevOps
-    //   this.props.spHttpClient.get(`${this.props.siteUrl}/_api/Web/Lists(guid'${this.props.listName}')/items?$select=Title,Description,BackgroundImageLocation,LinkLocation,Owner/Title&$expand=Owner/Id&$filter=Category eq '${this.props.filterName}'`, SPHttpClient.configurations.v1)
-    //     .then(response => {
-    //       return response.json();
-    //     })
-    //     .then((items: any) => {
-    //       // console.log(items);
-    //       const listItems: IFilteredPromotedLinkDataItem[] = [];
-    //       for (let i: number = 0; i < items.value.length; i++) {
-    //         listItems.push({
-    //           Title: items.value[i].Title,
-    //           Description: items.value[i].Description,
-    //           ImageUrl: items.value[i].BackgroundImageLocation.Url,
-    //           LinkUrl: items.value[i].LinkLocation.Url,
-    //           Owner: items.value[i].Owner.Title
-    //         });
-    //       }
-    //       this.setState({
-    //         listData: listItems,
-    //         loading: false,
-    //         showPlaceholder: false
-    //       });
-    //     }, (err: any) => {
-    //       console.log(err);
-    //     });
-    // } else {
-    //   // disable the Filter dropdown
-    //   this.setState({
-    //     listData: [],
-    //     loading: false,
-    //     showPlaceholder: false
-    //   });
-    // }
-
-
-
