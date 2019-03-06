@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from './AzureDevOpsKanbanBoard.module.scss';
-import { IAzureDevOpsKanbanBoardProps, WID, WItem, BoardData, LaneData, CardData } from './IAzureDevOpsKanbanBoardProps';
+import { IAzureDevOpsKanbanBoardProps, WID, BoardData, LaneData, CardData } from './IAzureDevOpsKanbanBoardProps';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/components/Spinner';
 import { Placeholder } from '@pnp/spfx-controls-react/lib/Placeholder';
 import { escape } from '@microsoft/sp-lodash-subset';
@@ -10,7 +10,6 @@ import { autobind } from 'office-ui-fabric-react';
 import { AadHttpClient, HttpClientResponse } from '@microsoft/sp-http';
 
 export interface IAzureDevOpsKanbanBoardState {
-  workItems: Array<WItem>;
   loading?: boolean;
   showPlaceholder?: boolean;
 }
@@ -24,12 +23,10 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
 
     // Initialize the state of the component
     this.state = {
-      //listData: {},
       loading: false,
       showPlaceholder: false,
-      workItems: [],
-      data: {
-        lanes: [
+      data: 
+      { lanes: [
           {
             id: 'Loading...',
             title: 'Loading...',
@@ -48,8 +45,34 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
   }
 
   public render(): React.ReactElement<IAzureDevOpsKanbanBoardProps> {
+
+    // Check if placeholder needs to be shown
+    if (this.state.showPlaceholder) {
+      return (
+        <Placeholder
+          iconName="Edit"
+          iconText="Kanban board web part configuration"
+          description="Please configure the web part to show the kanban board."
+          buttonLabel="Configure"
+          onConfigure={this._onConfigure}
+        />
+      );
+    } else {
     return (
       <div className={styles.azureDevOpsKanbanBoard}>
+      { this.state.loading ?
+        (
+          <Spinner size={SpinnerSize.large} label="Retrieving results ..." />
+        ) : this.state.data.length === null ?
+          (
+            <Placeholder
+              iconName="InfoSolid"
+              iconText="No items found"
+              description="Please select a new list or update the filter in the property pane."
+              buttonLabel="Configure"
+              onConfigure={this._onConfigure}
+            />
+          ) :
         <div className={styles.container}>
           <h2>{escape(this.props.description)}</h2>
           <Board
@@ -60,12 +83,14 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
             collapsibleLanes
           />
         </div>
+      }
       </div>
     );
   }
+}
 
   public componentDidMount(): void {
-    this.loadData();
+      this.loadData();
   }
 
   @autobind
@@ -96,7 +121,7 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
           ]
         }
       });
-      // console.log(this.state.data);
+      console.log(this.state.data);
     } else {
       // console.log("Get ADO data");
       this.props.context.aadHttpClientFactory
@@ -122,39 +147,29 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
                   return response.json();
                 })
                 .then(json => {
-                  // console.log(json);
-                  //let uniqueStates = [new Set(json.value.map(item => item.fields["System.State"]))];
-                  // console.log(uniqueStates);
-
                   this.buildLanes(json)
-                    .then((lanes) => {
-                      let workItemsList: Array<BoardData> = new Array<BoardData>();
-                      lanes.forEach(lStatus => {
-                        const filteredLanes = json.filter(State => {
-                          return State.items.fields["System.State"] === lStatus;
+                    .then((boardData) => {
+                      let workItemsList = boardData;
+
+                      json.value.map((items: any) => {
+                        const tempState = items.fields["System.State"];
+                        let laneIndex = workItemsList.lanes.findIndex((item) => item.title === tempState);
+
+                        workItemsList.lanes[laneIndex].cards.push({
+                          Id: items.id,
+                          Title: items.fields["System.Title"],
+                          Description: items.fields["System.Description"],
+                          WorkItemType: items.fields["System.WorkItemType"],
+                          State: items.fields["System.State"],
+                          StartDate: items.fields["Microsoft.VSTS.Scheduling.StartDate"],
+                          TargetDate: items.fields["Microsoft.VSTS.Scheduling.TargetDate"],
+                          Relations: items.relations
                         });
-                        workItemsList.push({
-                          lanes
                       });
-                      // json.value.map((items: any) => {
-                      //   workItemsList.push({
-                      //     Id: items.id,
-                      //     Title: items.fields["System.Title"],
-                      //     Description: items.fields["System.Description"],
-                      //     WorkItemType: items.fields["System.WorkItemType"],
-                      //     State: items.fields["System.State"],
-                      //     StartDate: items.fields["Microsoft.VSTS.Scheduling.StartDate"],
-                      //     TargetDate: items.fields["Microsoft.VSTS.Scheduling.TargetDate"],
-                      //     Relations: items.relations
-                      //   });
-                      // });
-
-
                       this.setState({
-                        workItems: workItemsList,
+                        data: workItemsList,
                       });
-                      console.log(this.state.workItems);
-                      //this.buildLanes();
+                      console.log(this.state.data);
                     });
                 });
             });
@@ -162,38 +177,25 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
     }
   }
 
-  // @autobind
-  // private buildLanes(json): string[] {
-  //   //let uniqueStates = Array.from(new Set(this.state.workItems.map(item => item.State)));
-  //   // console.log(uniqueStates);
-  //    let uniqueStates = Array.from(new Set(json.value.map(item => item.fields["System.State"])));
-  //    console.log(uniqueStates);
-  //   let lanes = [];
-  //   uniqueStates.map((items: any) => {
-  //     lanes.push({
-  //       id: items,
-  //       title: items,
-  //       cards: [],
-  //     });
 
-  //   });
-  //   console.log(lanes);
-  //   return lanes;
-  // }
 
-  protected buildLanes = async (json): Promise<string[]> => {
+  // Get the State values from the API results to construct Lanes and place them into the BoardData structure.
+  protected buildLanes = async (json): Promise<BoardData> => {
     let uniqueStates = Array.from(new Set(json.value.map(item => item.fields["System.State"])));
-    console.log(uniqueStates);
-    let lanes = [];
+    // console.log(uniqueStates);
+    let boardData = {
+      lanes: [],
+    };
+
     uniqueStates.map((items: any) => {
-      lanes.push({
+      boardData.lanes.push({
         id: items,
         title: items,
         cards: [],
       });
     });
-    console.log(lanes);
-    return lanes;
+    // console.log(boardData);
+    return boardData;
   }
 
 }

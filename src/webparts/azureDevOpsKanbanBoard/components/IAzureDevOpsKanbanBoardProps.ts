@@ -27,7 +27,6 @@ export interface WID {
   }
 
 */
-//
 
 export interface BoardData {
   lanes: LaneData[];
@@ -40,11 +39,11 @@ export interface LaneData {
   cards?: CardData[];
 }
 
-export interface CardData {
-  value: WItem[];
-}
+// export interface CardData {
+//   value: WItem[];
+// }
 
-export interface WItem {
+export interface CardData {
   Id: string | number;
   Title?: string;
   Description?: string;
