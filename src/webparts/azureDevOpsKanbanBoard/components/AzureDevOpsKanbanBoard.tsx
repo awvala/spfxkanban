@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from './AzureDevOpsKanbanBoard.module.scss';
-import { IAzureDevOpsKanbanBoardProps, WID, WItem } from './IAzureDevOpsKanbanBoardProps';
+import { IAzureDevOpsKanbanBoardProps, WID, WItem, BoardData, LaneData, CardData } from './IAzureDevOpsKanbanBoardProps';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/components/Spinner';
 import { Placeholder } from '@pnp/spfx-controls-react/lib/Placeholder';
 import { escape } from '@microsoft/sp-lodash-subset';
@@ -33,8 +33,7 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
           {
             id: 'Loading...',
             title: 'Loading...',
-            // label: '2/2',
-            cards: []
+            cards: [],
           }
         ]
       }
@@ -127,38 +126,64 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
                   //let uniqueStates = [new Set(json.value.map(item => item.fields["System.State"]))];
                   // console.log(uniqueStates);
 
-                  this.buildLanes(json);
-                  let workItems: Array<WItem> = new Array<WItem>();
-                  //for (let i: number = 0; i < items.value.length; i++) {
-                  json.value.map((items: any) => {
-                    workItems.push({
-                      Id: items.id,
-                      Title: items.fields["System.Title"],
-                      Description: items.fields["System.Description"],
-                      WorkItemType: items.fields["System.WorkItemType"],
-                      State: items.fields["System.State"],
-                      StartDate: items.fields["Microsoft.VSTS.Scheduling.StartDate"],
-                      TargetDate: items.fields["Microsoft.VSTS.Scheduling.TargetDate"],
-                      Relations: items.relations
+                  this.buildLanes(json)
+                    .then((lanes) => {
+                      let workItemsList: Array<BoardData> = new Array<BoardData>();
+                      lanes.forEach(lStatus => {
+                        const filteredLanes = json.filter(State => {
+                          return State.items.fields["System.State"] === lStatus;
+                        });
+                        workItemsList.push({
+                          lanes
+                      });
+                      // json.value.map((items: any) => {
+                      //   workItemsList.push({
+                      //     Id: items.id,
+                      //     Title: items.fields["System.Title"],
+                      //     Description: items.fields["System.Description"],
+                      //     WorkItemType: items.fields["System.WorkItemType"],
+                      //     State: items.fields["System.State"],
+                      //     StartDate: items.fields["Microsoft.VSTS.Scheduling.StartDate"],
+                      //     TargetDate: items.fields["Microsoft.VSTS.Scheduling.TargetDate"],
+                      //     Relations: items.relations
+                      //   });
+                      // });
+
+
+                      this.setState({
+                        workItems: workItemsList,
+                      });
+                      console.log(this.state.workItems);
+                      //this.buildLanes();
                     });
-                  });
-                  this.setState({
-                    workItems: workItems,
-                  });
-                  console.log(this.state.workItems);
-                  //this.buildLanes();
                 });
             });
         });
     }
   }
 
-  @autobind
-  private buildLanes(json): void {
-    //let uniqueStates = Array.from(new Set(this.state.workItems.map(item => item.State)));
-    // console.log(uniqueStates);
-     let uniqueStates = Array.from(new Set(json.value.map(item => item.fields["System.State"])));
-     console.log(uniqueStates);
+  // @autobind
+  // private buildLanes(json): string[] {
+  //   //let uniqueStates = Array.from(new Set(this.state.workItems.map(item => item.State)));
+  //   // console.log(uniqueStates);
+  //    let uniqueStates = Array.from(new Set(json.value.map(item => item.fields["System.State"])));
+  //    console.log(uniqueStates);
+  //   let lanes = [];
+  //   uniqueStates.map((items: any) => {
+  //     lanes.push({
+  //       id: items,
+  //       title: items,
+  //       cards: [],
+  //     });
+
+  //   });
+  //   console.log(lanes);
+  //   return lanes;
+  // }
+
+  protected buildLanes = async (json): Promise<string[]> => {
+    let uniqueStates = Array.from(new Set(json.value.map(item => item.fields["System.State"])));
+    console.log(uniqueStates);
     let lanes = [];
     uniqueStates.map((items: any) => {
       lanes.push({
@@ -166,9 +191,9 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
         title: items,
         cards: [],
       });
-
     });
     console.log(lanes);
+    return lanes;
   }
 
 }
