@@ -1,8 +1,11 @@
 import * as React from 'react';
 import styles from './AzureDevOpsKanbanBoard.module.scss';
 import Moment from 'react-moment';
+import ReactHtmlParser from 'react-html-parser';
 
 export const CustomCard = props => {
+
+    const html = props.description;
     return (
         <div className={props.workItempType === "Epic" ? styles.epicCard
             : props.workItemType === "Feature" ? styles.featureCard
@@ -16,7 +19,7 @@ export const CustomCard = props => {
             </div>
         </header>
         <div className="ms-fontSize-s">
-                <p>{props.description}</p>
+                <p>{ReactHtmlParser (html) }</p>
                 <div className={styles.dataStyle}><i className="ms-Icon ms-Icon--AlarmClock" aria-hidden="true"></i> <Moment format="MM/DD/YY">{props.target}</Moment>
                 </div>
         </div>
