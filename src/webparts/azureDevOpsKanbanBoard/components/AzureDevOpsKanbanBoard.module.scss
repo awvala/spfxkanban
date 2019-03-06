@@ -71,4 +71,61 @@
       display: inline-block;
     }
   }
+
+  // Begin Trello board custom styles
+  .boardContainer {
+    background-color: white;
+    padding: 0px;
+    height: auto;
+  }
+
+  .laneCustomHeader {
+    background-color: #f4f4f4;
+    border-radius: 0px;
+    margin: 5px;
+    position: relative;
+    padding: 10px;
+    display: inline-flex;
+    display: webkit-inline-box;
+    display: -webkint-inline-flex;
+    display: ms-inline-flexbox;
+    height: auto;
+    max-height: 90%;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    -ms-flex-direction:column;
+  }
+
+  .customCardStyle {
+    border-radius: 0px;
+    padding: 10px;
+    background-color: white;
+
+    &:hover {
+      background-color: white;
+    }
+  }
+
+  .epicCard {
+    @extend .customCardStyle;
+    border: 1px solid #ff8c00;
+    border-left: 4px solid #ff8c00;
+  }
+
+  .featureCard {
+    @extend .customCardStyle;
+    border: 1px solid #004578;
+    border-left: 4px solid #004578;
+  }
+
+  .userStoryCard {
+    @extend .customCardStyle;
+    border: 1px solid #2b88d8;
+    border-left: 4px solid #2b88d8;
+  }
+
+  .dataStyle {
+    font-size: 11px;
+    text-align: right;
+  }
 }

@@ -44,14 +44,14 @@ export interface LaneData {
 // }
 
 export interface CardData {
-  Id: string | number;
-  Title?: string;
-  Description?: string;
-  WorkItemType?: string;
-  State?: string;
-  StartDate?: Date;
-  TargetDate?: Date;
-  Relations?: any;
+  id: string | number;
+  title?: string;
+  description?: string;
+  workItemType?: string;
+  state?: string;
+  startdate?: Date;
+  targetdate?: Date;
+  relations?: any;
 }
 
 

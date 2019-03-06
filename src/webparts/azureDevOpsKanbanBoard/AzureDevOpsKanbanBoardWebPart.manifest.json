@@ -19,7 +19,7 @@
     "group": { "default": "Other" },
     "title": { "default": "Azure DevOps Kanban Board" },
     "description": { "default": "Azure DevOps Kanban Board description" },
-    "officeFabricIconFontName": "Page",
+    "officeFabricIconFontName": "BacklogBoard",
     "properties": {
       "description": "Azure DevOps Kanban Board"
     }
