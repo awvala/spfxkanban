@@ -120,8 +120,8 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
               title: 'Planned Tasks',
               // label: '2/2',
               cards: [
-                { id: 'Card1', title: 'Write Blog', description: 'Can AI make memes', label: '30 mins' },
-                { id: 'Card2', title: 'Pay Rent', description: 'Transfer via NEFT', label: '5 mins', metadata: { sha: 'be312a1' } }
+                { id: 'Card1', title: 'Write Blog', description: 'Can AI make memes', label: '30 mins', area: 'Inventory' },
+                { id: 'Card2', title: 'Pay Rent', description: 'Transfer via NEFT', label: '5 mins', area: 'PPM' }
               ]
             },
             {
@@ -129,17 +129,16 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
               title: 'In Progress',
               // label: '0/0',
               cards: [
-                { id: 'Card1', title: 'Review movies', description: 'Can AI review cinematography?', label: '20 mins' },
-                { id: 'Card2', title: 'Go out to dinner', description: 'Can I turn my OS into Friday?', label: '5 mins' }
+                { id: 'Card1', title: 'Review movies', description: 'Can AI review cinematography?', label: '20 mins', area: 'Quality'},
+                { id: 'Card2', title: 'Go out to dinner', description: 'Can I turn my OS into Friday?', label: '5 mins', area: 'Shipment' }
               ]
             }
           ]
         },
         loading: false,
       });
-      console.log(this.state.data);
+      // console.log(this.state.data);
     } else {
-      // console.log("Get ADO data");
       this.props.context.aadHttpClientFactory
         .getClient('499b84ac-1321-427f-aa17-267ca6975798')
         .then((client: AadHttpClient): void => {
@@ -160,6 +159,7 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
               client
                 .get(`https://dev.azure.com/AndrewVala/_apis/wit/workitems?ids=${wIDs}&$expand=relations&api-version=5.0`, AadHttpClient.configurations.v1)
                 .then((response: HttpClientResponse) => {
+                  // console.log(response);
                   return response.json();
                 })
                 .then(json => {
@@ -179,34 +179,13 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
                           state: items.fields["System.State"],
                           startdate: items.fields["Microsoft.VSTS.Scheduling.StartDate"],
                           targetdate: items.fields["Microsoft.VSTS.Scheduling.TargetDate"],
-                          relations: items.relations
+                          relations: items.relations,
+                          area: items.fields["Custom.Area"].toUpperCase()
                         });
                       });
                       this.setState({
                         data: workItemsList,
                         loading: false,
-                        // data: {
-                        //   lanes: [
-                        //     {
-                        //       id: 'Planned Tasks',
-                        //       title: 'Planned Tasks',
-                        //       // label: '2/2',
-                        //       cards: [
-                        //         { id: 'Card1', title: 'Write Blog', description: 'Can AI make memes', label: '30 mins' },
-                        //         { id: 'Card2', title: 'Pay Rent', description: 'Transfer via NEFT', label: '5 mins', metadata: { sha: 'be312a1' } }
-                        //       ]
-                        //     },
-                        //     {
-                        //       id: 'In Progress',
-                        //       title: 'In Progress',
-                        //       // label: '0/0',
-                        //       cards: [
-                        //         { id: 'Card1', title: 'Review movies', description: 'Can AI review cinematography?', label: '20 mins' },
-                        //         { id: 'Card2', title: 'Go out to dinner', description: 'Can I turn my OS into Friday?', label: '5 mins' }
-                        //       ]
-                        //     }
-                        //   ]
-                        // },
                       });
                       // console.log(this.state.data);
                     });

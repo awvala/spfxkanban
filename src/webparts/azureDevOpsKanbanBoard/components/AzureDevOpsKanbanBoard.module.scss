@@ -2,7 +2,7 @@
 
 .azureDevOpsKanbanBoard {
   .container {
-    max-width: 700px;
+    // max-width: 700px;
     margin: 0px auto;
     // box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
@@ -104,6 +104,8 @@
     -ms-flex-direction:column;
   }
 
+
+// Card Styling
   .customCardStyle {
     border-radius: 0px;
     padding: 10px;
@@ -132,8 +134,52 @@
     border-left: 4px solid #2b88d8;
   }
 
+  .cardDetail {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .cardDescription {
+    margin-bottom: 20px;
+
+  }
+
+  // Tag styling
+
+  .tagStyle {
+    padding: 5px 10px;
+  }
+
+  .inventoryArea {
+    @extend .tagStyle;
+    background-color: #286DA8;
+    @include ms-fontColor-white;
+  }
+
+  .ppmArea {
+    @extend .tagStyle;
+    background-color: #CD5360;
+    @include ms-fontColor-white;
+  }
+
+  .qualityArea {
+    @extend .tagStyle;
+    background-color: #B37d4e;
+    @include ms-fontColor-white;
+  }
+
+  .shipmentArea {
+    @extend .tagStyle;
+    background-color: #438496;
+    @include ms-fontColor-white;
+  }
+
+  .unkownArea {
+    @extend .tagStyle;
+    background-color: white;
+  }
+
   .dateStyle {
-    font-size: 11px;
-    text-align: right;
+    padding-top: 10px;
   }
 }
