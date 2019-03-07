@@ -208,7 +208,7 @@ export default class AzureDevOpsKanbanBoard extends React.Component<IAzureDevOps
                         //   ]
                         // },
                       });
-                      console.log(this.state.data);
+                      // console.log(this.state.data);
                     });
                 });
             });

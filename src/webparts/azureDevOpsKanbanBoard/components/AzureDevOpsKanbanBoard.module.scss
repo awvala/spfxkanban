@@ -4,23 +4,23 @@
   .container {
     max-width: 700px;
     margin: 0px auto;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
 
-  .row {
-    @include ms-Grid-row;
-    @include ms-fontColor-white;
-    background-color: $ms-color-themeDark;
-    padding: 20px;
-  }
+  // .row {
+  //   @include ms-Grid-row;
+  //   @include ms-fontColor-white;
+  //   background-color: $ms-color-themeDark;
+  //   padding: 20px;
+  // }
 
-  .column {
-    @include ms-Grid-col;
-    @include ms-lg10;
-    @include ms-xl8;
-    @include ms-xlPush2;
-    @include ms-lgPush1;
-  }
+  // .column {
+  //   @include ms-Grid-col;
+  //   @include ms-lg10;
+  //   @include ms-xl8;
+  //   @include ms-xlPush2;
+  //   @include ms-lgPush1;
+  // }
 
   .title {
     @include ms-font-xl;
@@ -80,6 +80,14 @@
   }
 
   .laneCustomHeader {
+    background-color: white;
+    border-bottom: 2px solid #C8C8C8;
+    margin: -10px -10px 0px -10px;
+    padding: 5px;
+    display: 'flex';
+  }
+
+  .customLane {
     background-color: #f4f4f4;
     border-radius: 0px;
     margin: 5px;
@@ -102,7 +110,7 @@
     background-color: white;
 
     &:hover {
-      background-color: white;
+      background-color: #f8f8f8;
     }
   }
 
@@ -124,7 +132,7 @@
     border-left: 4px solid #2b88d8;
   }
 
-  .dataStyle {
+  .dateStyle {
     font-size: 11px;
     text-align: right;
   }
